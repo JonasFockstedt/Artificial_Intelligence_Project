@@ -21,31 +21,32 @@ class pokerGames(object):
         self.Ante = 0
         self.playersCurrentBet = 0
 
-    '''
-    * Gets the name of the player.
-    * @return  The name of the player as a single word without space. <code>null</code> is not a valid answer.
-    '''
+    
     def queryPlayerName(self,_name):
+        '''
+        Gets the name of the player.\n
+        return - The name of the player as a single word without space. <code>null</code> is not a valid answer.
+        '''
         if _name is None:
             _name = POKER_CLIENT_NAME
         return _name
 
-    '''
-    * Modify queryOpenAction() and add your strategy here
-    * Called during the betting phases of the game when the player needs to decide what open
-    * action to choose.
-    * @param minimumPotAfterOpen   the total minimum amount of chips to put into the pot if the answer action is
-    *                              {@link BettingAnswer#ACTION_OPEN}.
-    * @param playersCurrentBet     the amount of chips the player has already put into the pot (dure to the forced bet).
-    * @param playersRemainingChips the number of chips the player has not yet put into the pot.
-    * @return                      An answer to the open query. The answer action must be one of
-    *                              {@link BettingAnswer#ACTION_OPEN}, {@link BettingAnswer#ACTION_ALLIN} or
-    *                              {@link BettingAnswer#ACTION_CHECK }. If the action is open, the answers
-    *                              amount of chips in the anser must be between <code>minimumPotAfterOpen</code>
-    *                              and the players total amount of chips (the amount of chips alrady put into
-    *                              pot plus the remaining amount of chips).
-    '''
+    
     def queryOpenAction(self, _minimumPotAfterOpen, _playersCurrentBet, _playersRemainingChips):
+        '''
+        Modify queryOpenAction() and add your strategy here\n
+        Called during the betting phases of the game when the player needs to decide what open
+        action to choose.\n
+        minimumPotAfterOpen - the total minimum amount of chips to put into the pot if the answer action is
+        {@link BettingAnswer#ACTION_OPEN}.\n
+        playersCurrentBet - the amount of chips the player has already put into the pot (dure to the forced bet).\n
+        playersRemainingChips - the number of chips the player has not yet put into the pot.\n
+        return - An answer to the open query. The answer action must be one of {@link BettingAnswer#ACTION_OPEN}, 
+        {@link BettingAnswer#ACTION_ALLIN} or {@link BettingAnswer#ACTION_CHECK }. 
+        If the action is open, the answers amount of chips in the anser must be between 
+        <code>minimumPotAfterOpen</code> and the players total amount of chips (the amount of chips alrady put into
+        pot plus the remaining amount of chips).
+        '''
         print("Player requested to choose an opening action.")
     
         # Random Open Action
@@ -61,26 +62,27 @@ class pokerGames(object):
             1: ClientBase.BettingAnswer.ACTION_ALLIN,
         }.get(random.randint(0, 2), chooseOpenOrCheck())
 
-    '''
-    * Modify queryCallRaiseAction() and add your strategy here
-    * Called during the betting phases of the game when the player needs to decide what call/raise
-    * action to choose.
-    * @param maximumBet                the maximum number of chips one player has already put into the pot.
-    * @param minimumAmountToRaiseTo    the minimum amount of chips to bet if the returned answer is {@link BettingAnswer#ACTION_RAISE}.
-    * @param playersCurrentBet         the number of chips the player has already put into the pot.
-    * @param playersRemainingChips     the number of chips the player has not yet put into the pot.
-    * @return                          An answer to the call or raise query. The answer action must be one of
-    *                                  {@link BettingAnswer#ACTION_FOLD}, {@link BettingAnswer#ACTION_CALL},
-    *                                  {@link BettingAnswer#ACTION_RAISE} or {@link BettingAnswer#ACTION_ALLIN }.
-    *                                  If the players number of remaining chips is less than the maximum bet and
-    *                                  the players current bet, the call action is not available. If the players
-    *                                  number of remaining chips plus the players current bet is less than the minimum
-    *                                  amount of chips to raise to, the raise action is not available. If the action
-    *                                  is raise, the answers amount of chips is the total amount of chips the player
-    *                                  puts into the pot and must be between <code>minimumAmountToRaiseTo</code> and
-    *                                  <code>playersCurrentBet+playersRemainingChips</code>.
-    '''
+    
     def queryCallRaiseAction(self, _maximumBet, _minimumAmountToRaiseTo, _playersCurrentBet, _playersRemainingChips):
+        '''
+        Modify queryCallRaiseAction() and add your strategy here.\n
+        Called during the betting phases of the game when the player needs to decide what call/raise
+        action to choose.\n
+        maximumBet - the maximum number of chips one player has already put into the pot.\n
+        minimumAmountToRaiseTo - the minimum amount of chips to bet if the returned answer is {@link BettingAnswer#ACTION_RAISE}.\n
+        playersCurrentBet - the number of chips the player has already put into the pot.\n
+        playersRemainingChips - the number of chips the player has not yet put into the pot.\n
+        return - An answer to the call or raise query. The answer action must be one of
+        {@link BettingAnswer#ACTION_FOLD}, {@link BettingAnswer#ACTION_CALL},
+        {@link BettingAnswer#ACTION_RAISE} or {@link BettingAnswer#ACTION_ALLIN}.
+        If the players number of remaining chips is less than the maximum bet and
+        the players current bet, the call action is not available. If the players
+        number of remaining chips plus the players current bet is less than the minimum
+        amount of chips to raise to, the raise action is not available. If the action
+        is raise, the answers amount of chips is the total amount of chips the player
+        puts into the pot and must be between <code>minimumAmountToRaiseTo</code> and
+        <code>playersCurrentBet+playersRemainingChips</code>.
+        '''
         print("Player requested to choose a call/raise action.")
         # Random Open Action
         def chooseRaiseOrFold(self):
@@ -94,134 +96,150 @@ class pokerGames(object):
             2: ClientBase.BettingAnswer.ACTION_CALL if _playersCurrentBet + _playersRemainingChips > _maximumBet else ClientBase.BettingAnswer.ACTION_FOLD
         }.get(random.randint(0, 3), chooseRaiseOrFold(self))
 
-    '''
-    * Modify queryCardsToThrow() and add your strategy to throw cards
-    * Called during the draw phase of the game when the player is offered to throw away some
-    * (possibly all) of the cards on hand in exchange for new.
-    * @return  An array of the cards on hand that should be thrown away in exchange for new,
-    *          or <code>null</code> or an empty array to keep all cards.
-    * @see     #infoCardsInHand(ca.ualberta.cs.poker.Hand)
-    '''
+    
     def queryCardsToThrow(self, _hand):
+        '''
+        Modify queryCardsToThrow() and add your strategy to throw cards
+        Called during the draw phase of the game when the player is offered to throw away some
+        (possibly all) of the cards on hand in exchange for new.
+        return - An array of the cards on hand that should be thrown away in exchange for new, or 
+        <code>null</code> or an empty array to keep all cards.\n
+        @see     #infoCardsInHand(ca.ualberta.cs.poker.Hand)
+        '''
         print("Requested information about what cards to throw")
         print(_hand)
         return _hand[random.randint(0,4)] + ' '
 
     # InfoFunction:
 
-    '''
-    * Called when a new round begins.
-    * @param round the round number (increased for each new round).
-    '''
+    
     def infoNewRound(self, _round):
+        '''
+        Called when a new round begins.\n
+        round - the round number (increased for each new round).
+        '''
         #_nrTimeRaised = 0
         print('Starting Round: ' + _round )
 
-    '''
-    * Called when the poker server informs that the game is completed.
-    '''
+        
     def infoGameOver(self):
+        '''
+        Called when the poker server informs that the game is completed.
+        '''
         print('The game is over.')
 
-    '''
-    * Called when the server informs the players how many chips a player has.
-    * @param playerName    the name of a player.
-    * @param chips         the amount of chips the player has.
-    '''
+    
     def infoPlayerChips(self, _playerName, _chips):
+        '''
+        Called when the server informs the players how many chips a player has.\n
+        playerName - the name of a player.\n
+        chips - the amount of chips the player has.
+        '''
         print('The player ' + _playerName + ' has ' + _chips + 'chips')
 
-    '''
-    * Called when the ante has changed.
-    * @param ante  the new value of the ante.
-    '''
+        
     def infoAnteChanged(self, _ante):
+        '''
+        Called when the ante has changed.\n
+        ante - the new value of the ante.
+        '''
         print('The ante is: ' + _ante)
 
-    '''
-    * Called when a player had to do a forced bet (putting the ante in the pot).
-    * @param playerName    the name of the player forced to do the bet.
-    * @param forcedBet     the number of chips forced to bet.
-    '''
+    
     def infoForcedBet(self, _playerName, _forcedBet):
+        '''
+        Called when a player had to do a forced bet (putting the ante in the pot).\n
+        playerName - the name of the player forced to do the bet.\n
+        forcedBet - the number of chips forced to bet.
+        '''
         print("Player "+ _playerName +" made a forced bet of "+ _forcedBet + " chips.")
 
 
-    '''
-    * Called when a player opens a betting round.
-    * @param playerName        the name of the player that opens.
-    * @param openBet           the amount of chips the player has put into the pot.
-    '''
+    
     def infoPlayerOpen(self, _playerName, _openBet):
+        '''
+        Called when a player opens a betting round.\n
+        playerName - the name of the player that opens.\n
+        openBet - the amount of chips the player has put into the pot.
+        '''
         print("Player "+ _playerName + " opened, has put "+ _openBet +" chips into the pot.")
 
-    '''
-    * Called when a player checks.
-    * @param playerName        the name of the player that checks.
-    '''
+    
     def infoPlayerCheck(self, _playerName):
+        '''
+        Called when a player checks.\n
+        playerName - the name of the player that checks.
+        '''
         print("Player "+ _playerName +" checked.")
 
-    '''
-    * Called when a player raises.
-    * @param playerName        the name of the player that raises.
-    * @param amountRaisedTo    the amount of chips the player raised to.
-    '''
+    
     def infoPlayerRise(self, _playerName, _amountRaisedTo):
+        '''
+        Called when a player raises.\n
+        playerName - the name of the player that raises.\n
+        amountRaisedTo - the amount of chips the player raised to.
+        '''
         print("Player "+_playerName +" raised to "+ _amountRaisedTo+ " chips.")
 
-    '''
-    * Called when a player calls.
-    * @param playerName        the name of the player that calls.
-    '''
+    
     def infoPlayerCall(self, _playerName):
+        '''
+        Called when a player calls.\n
+        playerName - the name of the player that calls.
+        '''
         print("Player "+_playerName +" called.")
 
-    '''
-    * Called when a player folds.
-    * @param playerName        the name of the player that folds.
-    '''
+    
     def infoPlayerFold(self, _playerName):
+        '''
+        Called when a player folds.\n
+        playerName - the name of the player that folds.
+        '''
         print("Player "+ _playerName +" folded.")
 
-    '''
-    * Called when a player goes all-in.
-    * @param playerName        the name of the player that goes all-in.
-    * @param allInChipCount    the amount of chips the player has in the pot and goes all-in with.
-    '''
+    
     def infoPlayerAllIn(self, _playerName, _allInChipCount):
+        '''
+        Called when a player goes all-in.\n
+        playerName - the name of the player that goes all-in.\n
+        allInChipCount - the amount of chips the player has in the pot and goes all-in with.
+        '''
         print("Player "+_playerName +" goes all-in with a pot of "+_allInChipCount+" chips.")
 
-    '''
-    * Called when a player has exchanged (thrown away and drawn new) cards.
-    * @param playerName        the name of the player that has exchanged cards.
-    * @param cardCount         the number of cards exchanged.
-    '''
+    
     def infoPlayerDraw(self, _playerName, _cardCount):
+        '''
+        Called when a player has exchanged (thrown away and drawn new) cards.\n
+        playerName - the name of the player that has exchanged cards.\n
+        cardCount - the number of cards exchanged.
+        '''
         print("Player "+ _playerName + " exchanged "+ _cardCount +" cards.")
 
-    '''
-    * Called during the showdown when a player shows his hand.
-    * @param playerName        the name of the player whose hand is shown.
-    * @param hand              the players hand.
-    '''
+    
     def infoPlayerHand(self, _playerName, _hand):
+        '''
+        Called during the showdown when a player shows his hand.\n
+        playerName - the name of the player whose hand is shown.\n
+        hand - the players hand.
+        '''
         print("Player "+ _playerName +" hand " + str(_hand))
 
-    '''
-    * Called during the showdown when a players undisputed win is reported.
-    * @param playerName    the name of the player whose undisputed win is anounced.
-    * @param winAmount     the amount of chips the player won.
-    '''
+    
     def infoRoundUndisputedWin(self, _playerName, _winAmount):
+        '''
+        Called during the showdown when a players undisputed win is reported.\n
+        playerName - the name of the player whose undisputed win is anounced.\n
+        winAmount - the amount of chips the player won.
+        '''
         print("Player "+ _playerName +" won "+ _winAmount +" chips undisputed.")
 
-    '''
-    * Called during the showdown when a players win is reported. If a player does not win anything,
-    * this method is not called.
-    * @param playerName    the name of the player whose win is anounced.
-    * @param winAmount     the amount of chips the player won.
-    '''
+    
     def infoRoundResult(self, _playerName, _winAmount):
+        '''
+        Called during the showdown when a players win is reported. If a player does not win anything,
+        this method is not called.\n
+        playerName - the name of the player whose win is anounced.\n
+        winAmount - the amount of chips the player won.
+        '''
         print("Player "+ _playerName +" won " + _winAmount + " chips.")
 
