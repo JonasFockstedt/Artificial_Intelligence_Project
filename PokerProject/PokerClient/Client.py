@@ -21,7 +21,14 @@ class pokerGames(object):
         self.Ante = 0
         self.playersCurrentBet = 0
 
+
+    def sortBySuit(self, card):
+        return card[1]
     
+    def calculateHand(self):
+        # Sort hand in ascending order.
+        self.CurrentHand.sort()
+
     def queryPlayerName(self,_name):
         '''
         Gets the name of the player.\n
@@ -222,6 +229,8 @@ class pokerGames(object):
         playerName - the name of the player whose hand is shown.\n
         hand - the players hand.
         '''
+        self.CurrentHand.sort()
+        self.CurrentHand.sort(key=self.sortBySuit)
         print("Player "+ _playerName +" hand " + str(_hand))
 
     
