@@ -10,7 +10,7 @@ TCP_PORT = 5000
 BUFFER_SIZE = 1024
 
 # Agent
-POKER_CLIENT_NAME = 'Agent 16'
+POKER_CLIENT_NAME = 'Agent16'
 CURRENT_HAND = []
 
 class pokerGames(object):
