@@ -2,9 +2,10 @@
 
 ## TODO
 - [ ] Rank hand.
-    - [ ] Rank actual strength.
+    - [x] Rank actual strength.
     - [ ] Rank potential strength.
 - [ ] When to "check" during opening round (if first).
+- [ ] Determine if hand consists of two pairs. (WIP)
 
 ### Hand
 1. "Actual" ranking system. Used for determining the strength of current hand.
