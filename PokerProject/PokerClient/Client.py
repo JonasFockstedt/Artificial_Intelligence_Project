@@ -2,6 +2,8 @@ __author__ = 'fyt'
 
 import socket
 import random
+from collections import Counter 
+
 import ClientBase
 
 # IP address and port
@@ -13,6 +15,9 @@ BUFFER_SIZE = 1024
 POKER_CLIENT_NAME = 'Agent16'
 CURRENT_HAND = []
 
+cardRanks = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7, "8": 8, "9": 9, "T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
+possibleHands = {}
+
 class pokerGames(object):
     def __init__(self):
         self.PlayerName = POKER_CLIENT_NAME
@@ -20,14 +25,77 @@ class pokerGames(object):
         self.CurrentHand = []
         self.Ante = 0
         self.playersCurrentBet = 0
+        self.handStrength = 0
+        self.handRank = ''
 
 
-    def sortBySuit(self, card):
+    def returnSuit(self, card):
         return card[1]
-    
-    def calculateHand(self):
-        # Sort hand in ascending order.
+
+
+    def sortHand(self):
+        # Sort hand in ascending order, based on both rank and suit.
         self.CurrentHand.sort()
+        self.CurrentHand.sort(key=self.returnSuit)
+    
+
+    def calculateHand(self):
+        strength = 0
+
+        self.checkPairs()
+
+        # self.CurrentHand[0][0] corresponds to rank of first card
+        if cardRanks[self.CurrentHand[0][0]] == cardRanks[self.CurrentHand[1][0]] or cardRanks[self.CurrentHand[1][0]] == cardRanks[self.CurrentHand[2][0]] or \
+        cardRanks[self.CurrentHand[2][0]] == cardRanks[self.CurrentHand[3][0]] or cardRanks[self.CurrentHand[3][0]] == cardRanks[self.CurrentHand[4][0]]:
+            print('One pair!')
+
+        for card in self.CurrentHand:
+            #print('Card: ' + card[0])
+            strength+=cardRanks[card[0]]
+        self.handStrength = strength
+
+        print('Strength of hand is: ' + str(self.handStrength))
+
+
+    def checkPairs(self):
+        rankOccurences = {}
+        numberOfPairs = 1
+        twoPairs = 0
+
+        # card[0] corresponds to rank of first card.
+        for card in self.CurrentHand:
+            if card[0] in rankOccurences:
+                rankOccurences[card[0]]+=1                  # Increase number of occurences.
+            else:
+                rankOccurences[card[0]] = 1                 # If first occurence.
+
+        # Determine how many times a card occurs at most.
+        for occurence in rankOccurences:
+            if occurence > numberOfPairs:
+                numberOfPairs = occurence
+
+        # Check if one pair.
+        if numberOfPairs == 2:
+            self.handRank = 'One Pair'                  # Assign value to agents hand rank.
+        # Check if two pairs.
+        elif numberOfPairs == 3:
+            self.handRank = 'Three of a kind'           # Assign value to agents hand rank.
+        elif numberOfPairs == 4:
+            self.handRank = 'Four of a kind'            # Assign value to agents hand rank.
+        else:
+            # Revisit this at some point.
+            listOfDict = list(rankOccurences.items())           # Convert the dictionary to a list.
+            for rank in listOfDict:
+                if rank[1] == 2:                            # Index 1 corresponds to the number of occurences of a given card.
+                    twoPairs+=1
+            if twoPairs == 2:
+                print('Two pairs!!!')
+                self.handRank = 'Two pairs'                 # Assign value to agents hand rank.
+
+        print('Number of occurences:')
+        print(rankOccurences)
+        #print(Counter(self.CurrentHand[]))
+        
 
     def queryPlayerName(self,_name):
         '''
@@ -55,6 +123,9 @@ class pokerGames(object):
         pot plus the remaining amount of chips).
         '''
         print("Player requested to choose an opening action.")
+
+        self.sortHand()
+        self.calculateHand()
     
         # Random Open Action
         def chooseOpenOrCheck():
@@ -91,6 +162,7 @@ class pokerGames(object):
         <code>playersCurrentBet+playersRemainingChips</code>.
         '''
         print("Player requested to choose a call/raise action.")
+        self.calculateHand()
         # Random Open Action
         def chooseRaiseOrFold(self):
             if  _playersCurrentBet + _playersRemainingChips > _minimumAmountToRaiseTo:
@@ -229,8 +301,9 @@ class pokerGames(object):
         playerName - the name of the player whose hand is shown.\n
         hand - the players hand.
         '''
-        self.CurrentHand.sort()
-        self.CurrentHand.sort(key=self.sortBySuit)
+        self.sortHand()
+        #self.CurrentHand.sort()
+        #self.CurrentHand.sort(key=self.returnSuit)
         print("Player "+ _playerName +" hand " + str(_hand))
 
     
