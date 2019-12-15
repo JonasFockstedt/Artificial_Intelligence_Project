@@ -43,18 +43,33 @@ class pokerGames(object):
         strength = 0
 
         self.checkPairs()
-
-        # self.CurrentHand[0][0] corresponds to rank of first card
-        if cardRanks[self.CurrentHand[0][0]] == cardRanks[self.CurrentHand[1][0]] or cardRanks[self.CurrentHand[1][0]] == cardRanks[self.CurrentHand[2][0]] or \
-        cardRanks[self.CurrentHand[2][0]] == cardRanks[self.CurrentHand[3][0]] or cardRanks[self.CurrentHand[3][0]] == cardRanks[self.CurrentHand[4][0]]:
-            print('One pair!')
+        print('Rank order of first two cards:')
+        print(self.CurrentHand[0][0], self.CurrentHand[1][0])
+        
 
         for card in self.CurrentHand:
-            #print('Card: ' + card[0])
             strength+=cardRanks[card[0]]
         self.handStrength = strength
 
         print('Strength of hand is: ' + str(self.handStrength))
+
+
+    def checkStraight(self):
+        self.checkFlush()
+        if cardRanks[self.CurrentHand[0][0]]+1 == cardRanks[self.CurrentHand[1][0]] and cardRanks[self.CurrentHand[1][0]]+1 == cardRanks[self.CurrentHand[2][0]] \
+            and cardRanks[self.CurrentHand[2][0]]+1 == cardRanks[self.CurrentHand[3][0]] and cardRanks[self.CurrentHand[3][0]]+1 == cardRanks[self.CurrentHand[4][0]]:
+            if self.handRank == 'Flush':
+                print('********STRAIGHT FLUSH!!!!********')
+                self.handRank = 'Straight flush'
+            else:
+                print('********STRAIGHT!!!!********')
+                self.handRank = 'Straight'
+        
+    
+    def checkFlush(self):
+        if self.CurrentHand[0][1] == self.CurrentHand[1][1] == self.CurrentHand[2][1] == self.CurrentHand[3][1] == self.CurrentHand[4][1]:
+            print('********FLUSH!!!!********')
+            self.handRank = 'Flush'
 
 
     def checkPairs(self):
