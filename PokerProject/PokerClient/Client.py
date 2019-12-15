@@ -30,11 +30,16 @@ class pokerGames(object):
 
 
     def returnSuit(self, card):
+        '''
+        Specifically called when the hand needs to be sorted after suits.
+        '''
         return card[1]
 
 
     def sortHand(self):
-        # Sort hand in ascending order, based on both rank and suit.
+        '''
+        Sorts hand in ascending order, based on both rank and suit.
+        '''
         self.CurrentHand.sort()
         self.CurrentHand.sort(key=self.returnSuit)
     
@@ -61,6 +66,9 @@ class pokerGames(object):
 
 
     def checkStraight(self):
+        '''
+        Checks whether the agent has a straight or straight flush.
+        '''
         self.checkFlush()
         # Check if hand is a flush, then determine if it is a straight flush, or regular flush.
         if cardRanks[self.CurrentHand[0][0]]+1 == cardRanks[self.CurrentHand[1][0]] and cardRanks[self.CurrentHand[1][0]]+1 == cardRanks[self.CurrentHand[2][0]] \
@@ -74,12 +82,18 @@ class pokerGames(object):
         
     
     def checkFlush(self):
+        '''
+        Check whether the agent has a flush.
+        '''
         if self.CurrentHand[0][1] == self.CurrentHand[1][1] == self.CurrentHand[2][1] == self.CurrentHand[3][1] == self.CurrentHand[4][1]:
             print('********FLUSH!!!!********')
             self.handRank = 'Flush'                         # Assign value to agents hand rank.
 
 
     def checkPairs(self):
+        '''
+        Checks whether the agent has one pair, two pairs, three of a kind, four of a kind or full house.
+        '''
         rankOccurences = {}
         numberOfPairs = 1
         twoPairs = False                                        # To check if agent has two pairs.
@@ -159,6 +173,10 @@ class pokerGames(object):
 
         self.sortHand()
         self.calculateHand()
+
+        # If hand is too weak, check.
+        if self.handStrength <= 10:
+            return ClientBase.BettingAnswer.ACTION_CHECK
     
         # Random Open Action
         def chooseOpenOrCheck():

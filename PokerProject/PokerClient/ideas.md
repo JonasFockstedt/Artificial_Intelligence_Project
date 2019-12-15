@@ -12,9 +12,10 @@
         - [x] Full house.
         - [x] Four of a kind.
         - [x] Straight flush.
-    - [x] Rank actual strength. Adding value of ranks.
+    - [x] Rank actual strength (adding value of ranks).
     - [ ] Rank potential strength.
 - [ ] When to "check" during opening round (if first).
+- [ ] Handle cases when Aces are low (when part of straight or straight flush).
 
 ### Hand
 1. "Actual" ranking system. Used for determining the strength of current hand.
