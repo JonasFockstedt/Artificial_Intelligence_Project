@@ -59,23 +59,24 @@ class pokerGames(object):
         if cardRanks[self.CurrentHand[0][0]]+1 == cardRanks[self.CurrentHand[1][0]] and cardRanks[self.CurrentHand[1][0]]+1 == cardRanks[self.CurrentHand[2][0]] \
             and cardRanks[self.CurrentHand[2][0]]+1 == cardRanks[self.CurrentHand[3][0]] and cardRanks[self.CurrentHand[3][0]]+1 == cardRanks[self.CurrentHand[4][0]]:
             if self.handRank == 'Flush':
-                print('********STRAIGHT FLUSH!!!!********')
+                print('********STRAIGHT FLUSH!!!!********') # Assign value to agents hand rank.
                 self.handRank = 'Straight flush'
             else:
                 print('********STRAIGHT!!!!********')
-                self.handRank = 'Straight'
+                self.handRank = 'Straight'                  # Assign value to agents hand rank.
         
     
     def checkFlush(self):
         if self.CurrentHand[0][1] == self.CurrentHand[1][1] == self.CurrentHand[2][1] == self.CurrentHand[3][1] == self.CurrentHand[4][1]:
             print('********FLUSH!!!!********')
-            self.handRank = 'Flush'
+            self.handRank = 'Flush'                         # Assign value to agents hand rank.
 
 
     def checkPairs(self):
         rankOccurences = {}
         numberOfPairs = 1
-        twoPairs = 0
+        twoPairs = 0                                        # To check if agent has two pairs.
+        threePairs = 0                                      # To check if agent has three pairs.
 
         # card[0] corresponds to rank of first card.
         for card in self.CurrentHand:
@@ -99,13 +100,20 @@ class pokerGames(object):
             self.handRank = 'Four of a kind'            # Assign value to agents hand rank.
         else:
             # Revisit this at some point.
-            listOfDict = list(rankOccurences.items())           # Convert the dictionary to a list.
+            listOfDict = list(rankOccurences.items())       # Convert the dictionary to a list.
             for rank in listOfDict:
-                if rank[1] == 2:                            # Index 1 corresponds to the number of occurences of a given card.
+                # Index 1 corresponds to the number of occurences of a given card.
+                if rank[1] == 2:                            # If a rank has occured two times.
                     twoPairs+=1
+                elif rank[1] == 3:                          # If a rank has occured three times.
+                    threePairs+=1
+            
             if twoPairs == 2:
                 print('Two pairs!!!')
                 self.handRank = 'Two pairs'                 # Assign value to agents hand rank.
+            elif threePairs == 3 and twoPairs == 2:
+                print('********FULL HOUSE!!!!********')
+                self.handRank == 'Full house.'              # Assign value to agents hand rank.
 
         print('Number of occurences:')
         print(rankOccurences)
