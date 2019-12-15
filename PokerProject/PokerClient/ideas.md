@@ -2,8 +2,8 @@
 
 ## TODO
 - [ ] Rank hand.
-    - [ ] Determine the possible hands.
-        - [ ] High cards.
+    - [x] Determine the possible hands.
+        - [x] High cards.
         - [x] One pair.
         - [x] Two pairs.
         - [x] Three of a kind.
@@ -15,7 +15,6 @@
     - [x] Rank actual strength. Adding value of ranks.
     - [ ] Rank potential strength.
 - [ ] When to "check" during opening round (if first).
-- [x] Determine if hand consists of two pairs.
 
 ### Hand
 1. "Actual" ranking system. Used for determining the strength of current hand.
