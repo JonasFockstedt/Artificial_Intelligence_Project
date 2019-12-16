@@ -1,4 +1,4 @@
-__author__ = 'fyt'
+__author__ = 'Jonas Fockstedt, Ema Krcic'
 
 import socket
 import random
