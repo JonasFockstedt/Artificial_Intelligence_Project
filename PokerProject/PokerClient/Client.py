@@ -173,7 +173,7 @@ class pokerGames(object):
         direction - a string determining which direction to search. "forwards" and "backwards" are the two options.
         '''
         closeToStraight = True
-        print(self.CurrentHand)
+        self.CurrentHand.sort()
 
         if direction == 'forwards':
             # Iterate through the hand, and keep a counter with enumerate().
@@ -189,6 +189,7 @@ class pokerGames(object):
                 if str(cardRanks[card[0]]-1) is not self.CurrentHand[len(self.CurrentHand) - 2 - index][0]:
                     closeToStraight = False
 
+        self.sortHand()
         return closeToStraight
 
     def queryPlayerName(self, _name):
@@ -219,7 +220,6 @@ class pokerGames(object):
 
         self.sortHand()
         self.calculateHand()
-        self.CurrentHand = ["2d", "3s", "4d", "5h", "7s"]
         self.checkForNearbyStraight('forwards')
 
         def chooseOpenOrCheck():
