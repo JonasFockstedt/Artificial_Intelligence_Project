@@ -1,6 +1,17 @@
-# FEATURES
+# ♣♠♦♥ AI Poker Agent ♥♦♠♣
 
+## Implemented Features
+
+- Agent sorts its hand. Ascending rank order and in alphabetical suit order.
 - Agent can determine which hand it has.
+- Marks important cards when agent has pairs.
+- Agent can determine if it is close to a straight (can only be determined by first or last card).
+
+## Grading criteria
+
+- Grade 3: A rational agent needs to be implemented.
+- Grade 4: A reflex agent that takes the opponent's actions into account.
+- Grade 5: An agent that can learn (e.g. with built-in machine learning algorithm) over time.
 
 ## TODO
 
@@ -19,8 +30,14 @@
     - [ ] Give rank of the different type of hands.
     - [ ] Calculate strength of hand when agent has 'high cards'.
   - [ ] Rank potential strength.
+    - [ ] Determine which goal hand is the closes.
 - [ ] When to "check" during opening round (if first).
 - [ ] Handle cases when Aces are low (when part of straight or straight flush).
+- [x] Mark important cards.
+
+## WIP
+
+- Decide which cards to throw.
 
 ## IDEAS
 
@@ -53,3 +70,9 @@
 ### Check
 
 1. When hand is mediocre.
+
+# COMSOL
+
+$c_r*sin(cosh((c_r-c_x)/c_r))$
+$c_r$ = radie cirkel
+$c_x$ = förflyttning i x-led

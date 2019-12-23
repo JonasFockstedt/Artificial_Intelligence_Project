@@ -153,18 +153,43 @@ class pokerGames(object):
         print(rankOccurences)
 
     def checkImportantCards(self):
+        '''
+        If an agent has any number of pairs, not function is used to determine which cards can not be thrown away.
+        '''
         # Reset important cards.
         self.importantCards = []
 
         for card in self.CurrentHand:
-            print('First card: ', card)
             for secondCard in self.CurrentHand[self.CurrentHand.index(card)+1::]:
-                print('Second card: ', secondCard)
                 if card[0] == secondCard[0]:
                     self.importantCards.append(card)
                     self.importantCards.append(secondCard)
 
         print('IMPORTANT CARDS: ', self.importantCards)
+
+    def checkForNearbyStraight(self, direction):
+        '''
+        Determine if last or first card in hand needs to be thrown.\n
+        direction - a string determining which direction to search. "forwards" and "backwards" are the two options.
+        '''
+        closeToStraight = True
+        print(self.CurrentHand)
+
+        if direction == 'forwards':
+            # Iterate through the hand, and keep a counter with enumerate().
+            for index, card in enumerate(self.CurrentHand[:-2]):
+                # Check if next card is NOT in ascending order of current card.
+                if str(cardRanks[card[0]]+1) is not self.CurrentHand[index+1][0]:
+                    closeToStraight = False
+
+        elif direction == 'backwards':
+            # Iterate through the hand, and keep a counter with enumerate().
+            for index, card in enumerate(reversed(self.CurrentHand[-3:])):
+                # Check if "previous" card is NOT in descending order of current card.
+                if str(cardRanks[card[0]]-1) is not self.CurrentHand[len(self.CurrentHand) - 2 - index][0]:
+                    closeToStraight = False
+
+        return closeToStraight
 
     def queryPlayerName(self, _name):
         '''
@@ -194,6 +219,8 @@ class pokerGames(object):
 
         self.sortHand()
         self.calculateHand()
+        self.CurrentHand = ["2d", "3s", "4d", "5h", "7s"]
+        self.checkForNearbyStraight('forwards')
 
         def chooseOpenOrCheck():
             if _playersCurrentBet + _playersRemainingChips > _minimumPotAfterOpen:
@@ -237,6 +264,7 @@ class pokerGames(object):
         <code>playersCurrentBet+playersRemainingChips</code>.
         '''
         print("Player requested to choose a call/raise action.")
+        self.sortHand()
         self.calculateHand()
         # Random Open Action
 
@@ -265,6 +293,7 @@ class pokerGames(object):
         print("Requested information about what cards to throw")
         print(_hand)
         self.checkImportantCards()
+        # If agent has some kind of pairs, throw the other cards.
         if self.handRank == 'One Pair' or 'Two pairs' or 'Three of a kind' or 'Four of a kind':
             for card in self.CurrentHand:
                 if card not in self.importantCards:
@@ -276,10 +305,15 @@ class pokerGames(object):
         elif self.handRank == 'Straight' or 'Flush' or 'Full house' or 'Straight flush':
             return ' '
 
-        # Throws whole hand if strength of cards is too weak.
-        if self.handStrength <= 10:
-            print('THROWING WHOLE HAND')
-            return ' '.join(_hand)
+        elif self.handRank == 'High cards':
+
+            # if cardRanks[self.CurrentHand[0][0]]+1 == cardRanks[self.CurrentHand[1][0]] and cardRanks[self.CurrentHand[1][0]]+1 == cardRanks[self.CurrentHand[2][0]] \
+            #         and cardRanks[self.CurrentHand[2][0]]+1 == cardRanks[self.CurrentHand[3][0]]:
+                # Throws whole hand if strength of cards is too weak.
+
+            if self.handStrength <= 10:
+                print('THROWING WHOLE HAND')
+                return ' '.join(_hand)
         return _hand[random.randint(0, 4)] + ' '
 
     # InfoFunction:
