@@ -17,7 +17,8 @@ CURRENT_HAND = []
 
 cardRanks = {"2": 2, "3": 3, "4": 4, "5": 5, "6": 6, "7": 7,
              "8": 8, "9": 9, "T": 10, "J": 11, "Q": 12, "K": 13, "A": 14}
-possibleHands = {}
+handRanks = {"High cards": 0, "One Pair": 1, "Two pairs": 2, "Three of a kind": 3, "Straight": 4,
+             "Flush": 5, "Full house": 6, "Four of a kind": 7, "Straight flush": 8}
 
 
 class pokerGames(object):
@@ -29,6 +30,7 @@ class pokerGames(object):
         self.playersCurrentBet = 0
         self.handStrength = 0
         self.handRank = ''
+        self.importantCards = []
 
     def returnSuit(self, card):
         '''
@@ -113,6 +115,7 @@ class pokerGames(object):
         # Convert the dictionary to a list.
         listOfDict = list(rankOccurences.items())
         for occurence in listOfDict:
+            # occurence[1] corresponds to the value from the dictionary.
             if occurence[1] > numberOfPairs:
                 numberOfPairs = occurence[1]
 
@@ -129,7 +132,7 @@ class pokerGames(object):
         if threePairs and twoPairs:
             print('********FULL HOUSE!!!!********')
             # Assign value to agents hand rank.
-            self.handRank == 'Full house.'
+            self.handRank == 'Full house'
         elif twoPairs:
             print('Two pairs!!!')
             # Assign value to agents hand rank.
@@ -148,6 +151,20 @@ class pokerGames(object):
 
         print('Number of occurences:')
         print(rankOccurences)
+
+    def checkImportantCards(self):
+        # Reset important cards.
+        self.importantCards = []
+
+        for card in self.CurrentHand:
+            print('First card: ', card)
+            for secondCard in self.CurrentHand[self.CurrentHand.index(card)+1::]:
+                print('Second card: ', secondCard)
+                if card[0] == secondCard[0]:
+                    self.importantCards.append(card)
+                    self.importantCards.append(secondCard)
+
+        print('IMPORTANT CARDS: ', self.importantCards)
 
     def queryPlayerName(self, _name):
         '''
@@ -178,13 +195,17 @@ class pokerGames(object):
         self.sortHand()
         self.calculateHand()
 
-        # If hand is too weak, check.
-        if self.handStrength <= 10:
-            return ClientBase.BettingAnswer.ACTION_CHECK
-
-        # Random Open Action
         def chooseOpenOrCheck():
             if _playersCurrentBet + _playersRemainingChips > _minimumPotAfterOpen:
+
+                # Go all-in if agent has a straight flush
+                if self.handRank == 'Straight flush':
+                    return ClientBase.BettingAnswer.ACTION_OPEN, ClientBase.BettingAnswer.ACTION_ALLIN
+
+                # If hand is too weak, fold.
+                if self.handStrength <= 10:
+                    return ClientBase.BettingAnswer.ACTION_FOLD
+
                 # return ClientBase.BettingAnswer.ACTION_OPEN,  iOpenBet
                 return ClientBase.BettingAnswer.ACTION_OPEN,  (random.randint(0, 10) + _minimumPotAfterOpen) if _playersCurrentBet + _playersRemainingChips + 10 > _minimumPotAfterOpen else _minimumPotAfterOpen
             else:
@@ -220,7 +241,7 @@ class pokerGames(object):
         # Random Open Action
 
         def chooseRaiseOrFold(self):
-            # Check if agent can afford to join the next round. Else, fold.
+            # Check if agent can afford to join the next round.
             if _playersCurrentBet + _playersRemainingChips > _minimumAmountToRaiseTo:
                 return ClientBase.BettingAnswer.ACTION_RAISE,  (random.randint(0, 10) + _minimumAmountToRaiseTo) if _playersCurrentBet + _playersRemainingChips + 10 > _minimumAmountToRaiseTo else _minimumAmountToRaiseTo
             else:
@@ -240,8 +261,25 @@ class pokerGames(object):
         <code>null</code> or an empty array to keep all cards.\n
         @see     #infoCardsInHand(ca.ualberta.cs.poker.Hand)
         '''
+        cardsToThrow = []
         print("Requested information about what cards to throw")
         print(_hand)
+        self.checkImportantCards()
+        if self.handRank == 'One Pair' or 'Two pairs' or 'Three of a kind' or 'Four of a kind':
+            for card in self.CurrentHand:
+                if card not in self.importantCards:
+                    cardsToThrow.append(card)
+            # Joins list elements and separates them with a space
+            return ' '.join(cardsToThrow)
+
+        # Do not throw anything since Straight, Flush, Full house and Straight flush are considered good hands.
+        elif self.handRank == 'Straight' or 'Flush' or 'Full house' or 'Straight flush':
+            return ' '
+
+        # Throws whole hand if strength of cards is too weak.
+        if self.handStrength <= 10:
+            print('THROWING WHOLE HAND')
+            return ' '.join(_hand)
         return _hand[random.randint(0, 4)] + ' '
 
     # InfoFunction:
