@@ -6,6 +6,7 @@
 - Agent can determine which hand it has.
 - Marks important cards when agent has pairs.
 - Agent can determine if it is close to a straight (can only be determined by first or last card).
+- Agent can determine if it is close to a flush (can only be determined by first or last card).
 
 ## Grading criteria
 
