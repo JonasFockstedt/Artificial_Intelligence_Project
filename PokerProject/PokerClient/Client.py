@@ -176,18 +176,20 @@ class pokerGames(object):
         self.CurrentHand.sort()
 
         if direction == 'forwards':
-            # Iterate through the hand, and keep a counter with enumerate().
+            # Iterate through the hand, and keep a counter with enumerate(). Not iterating through last two elements in hand.
             for index, card in enumerate(self.CurrentHand[:-2]):
                 # Check if next card is NOT in ascending order of current card.
                 if str(cardRanks[card[0]]+1) is not self.CurrentHand[index+1][0]:
                     closeToStraight = False
+                    break
 
         elif direction == 'backwards':
-            # Iterate through the hand, and keep a counter with enumerate().
+            # Iterate through the hand, and keep a counter with enumerate(). Not iterating through first 3 elements in hand.
             for index, card in enumerate(reversed(self.CurrentHand[-3:])):
                 # Check if "previous" card is NOT in descending order of current card.
                 if str(cardRanks[card[0]]-1) is not self.CurrentHand[len(self.CurrentHand) - 2 - index][0]:
                     closeToStraight = False
+                    break
 
         self.sortHand()
         return closeToStraight
@@ -293,27 +295,31 @@ class pokerGames(object):
         print("Requested information about what cards to throw")
         print(_hand)
         self.checkImportantCards()
+        if self.handRank == 'High cards':
+            # Check if last card needs to be thrown in order to get a straight.
+            if self.checkForNearbyStraight('backwards'):
+                print('First card has to be thrown away')
+                return ''.join(self.CurrentHand[0])
+            # Check if first card needs to be thrown in order to get a straight.
+            elif self.checkForNearbyStraight('forwards'):
+                print('Last card has to be thrown away')
+                return ''.join(self.CurrentHand[4])
+            # Throws whole hand if strength of cards is too weak.
+            elif self.handStrength <= 10:
+                print('THROWING WHOLE HAND')
+                return ' '.join(_hand)
         # If agent has some kind of pairs, throw the other cards.
-        if self.handRank == 'One Pair' or 'Two pairs' or 'Three of a kind' or 'Four of a kind':
+        elif self.handRank == 'One Pair' or 'Two pairs' or 'Three of a kind' or 'Four of a kind':
             for card in self.CurrentHand:
                 if card not in self.importantCards:
                     cardsToThrow.append(card)
-            # Joins list elements and separates them with a space
+            # Joins list elements and separates them with a space since the server demands this format.
             return ' '.join(cardsToThrow)
 
         # Do not throw anything since Straight, Flush, Full house and Straight flush are considered good hands.
         elif self.handRank == 'Straight' or 'Flush' or 'Full house' or 'Straight flush':
             return ' '
 
-        elif self.handRank == 'High cards':
-
-            # if cardRanks[self.CurrentHand[0][0]]+1 == cardRanks[self.CurrentHand[1][0]] and cardRanks[self.CurrentHand[1][0]]+1 == cardRanks[self.CurrentHand[2][0]] \
-            #         and cardRanks[self.CurrentHand[2][0]]+1 == cardRanks[self.CurrentHand[3][0]]:
-                # Throws whole hand if strength of cards is too weak.
-
-            if self.handStrength <= 10:
-                print('THROWING WHOLE HAND')
-                return ' '.join(_hand)
         return _hand[random.randint(0, 4)] + ' '
 
     # InfoFunction:
