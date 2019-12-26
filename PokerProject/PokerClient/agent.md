@@ -34,10 +34,7 @@
 - [ ] When to "check" during opening round (if first).
 - [ ] Handle cases when Aces are low (when part of straight or straight flush).
 - [x] Mark important cards.
-
-## WIP
-
-- Decide which cards to throw.
+- [ ] Determine if close to flush
 
 ## IDEAS
 
