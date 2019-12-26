@@ -251,7 +251,7 @@ class pokerGames(object):
         self.calculateHand()
 
         def chooseOpenOrCheck(self):
-            if _playersCurrentBet + _playersRemainingChips > _minimumPotAfterOpen:
+            if _playersCurrentBet + _playersRemainingChips >= _minimumPotAfterOpen:
 
                 # Go all-in if agent has a straight flush
                 if self.handRank == 'Straight flush':
@@ -281,9 +281,9 @@ class pokerGames(object):
                 elif self.handRank == 'High cards':
                     # If close to straight.
                     if self.checkForNearbyStraight('forwards') or self.checkForNearbyStraight('backwards'):
-                        return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen + 10 + _minimumPotAfterOpen
+                        return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen + 10
                     elif self.checkForNearbyFlush('forwards') or self.checkForNearbyFlush('backwards'):
-                        return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen + _playersRemainingChips/3 + _minimumPotAfterOpen
+                        return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen + _playersRemainingChips/3
                     # If hand is too weak, fold.
                     elif self.handStrength <= 10:
                         return ClientBase.BettingAnswer.ACTION_CHECK
@@ -328,7 +328,7 @@ class pokerGames(object):
 
         def chooseRaiseOrFold(self):
             # Check if agent can afford to join the next round.
-            if _playersCurrentBet + _playersRemainingChips > _minimumAmountToRaiseTo:
+            if _playersCurrentBet + _playersRemainingChips >= _minimumAmountToRaiseTo:
                 # Go all-in if agent has a straight flush
                 if self.handRank == 'Straight flush':
                     return ClientBase.BettingAnswer.ACTION_RAISE, ClientBase.BettingAnswer.ACTION_ALLIN
@@ -405,6 +405,9 @@ class pokerGames(object):
             elif self.handStrength <= 10:
                 print('THROWING WHOLE HAND')
                 return ' '.join(_hand)
+            # Else-statement for situations not handled by previous if-statements.
+            else:
+                return ' '.join(_hand)
         # If agent has some kind of pairs, throw the other cards.
         elif self.handRank == 'One pair' or 'Two pairs' or 'Three of a kind' or 'Four of a kind':
             for card in self.CurrentHand:
@@ -417,10 +420,7 @@ class pokerGames(object):
         elif self.handRank == 'Straight' or 'Flush' or 'Full house' or 'Straight flush':
             return ' '
 
-        return _hand[random.randint(0, 4)] + ' '
-
     # InfoFunction:
-
     def infoNewRound(self, _round):
         '''
         Called when a new round begins.\n
