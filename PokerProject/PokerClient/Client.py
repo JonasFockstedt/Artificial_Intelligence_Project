@@ -70,11 +70,12 @@ class pokerGames(object):
         Checks whether the agent has a straight or straight flush.
         '''
         self.checkFlush()
-        # Check if hand is a flush, then determine if it is a straight flush, or regular flush.
-        if cardRanks[self.CurrentHand[0][0]]+1 == cardRanks[self.CurrentHand[1][0]] and cardRanks[self.CurrentHand[1][0]]+1 == cardRanks[self.CurrentHand[2][0]] \
-                and cardRanks[self.CurrentHand[2][0]]+1 == cardRanks[self.CurrentHand[3][0]] and cardRanks[self.CurrentHand[3][0]]+1 == cardRanks[self.CurrentHand[4][0]]:
+        self.sortHand()
+        # Check if hand is a flush, then determine if it is a straight flush, or regular flush. Also check if the straight consists of a A-2-3-4-5.
+        if (cardRanks[self.CurrentHand[0][0]]+1 == cardRanks[self.CurrentHand[1][0]] and cardRanks[self.CurrentHand[1][0]]+1 == cardRanks[self.CurrentHand[2][0]]
+                and cardRanks[self.CurrentHand[2][0]]+1 == cardRanks[self.CurrentHand[3][0]] and cardRanks[self.CurrentHand[3][0]]+1 == cardRanks[self.CurrentHand[4][0]]) or (self.CurrentHand[0][0] == '2' and self.CurrentHand[1][0] == '3' and self.CurrentHand[2][0] == '4' and self.CurrentHand[3][0] == '5' and self.CurrentHand[4][0] == 'A'):
             if self.handRank == 'Flush':
-                # Assign value to agents hand rank.
+                    # Assign value to agents hand rank.
                 print('********STRAIGHT FLUSH!!!!********')
                 self.handRank = 'Straight flush'
             else:
@@ -238,9 +239,9 @@ class pokerGames(object):
         {@link BettingAnswer#ACTION_OPEN}.\n
         playersCurrentBet - the amount of chips the player has already put into the pot (due to the forced bet).\n
         playersRemainingChips - the number of chips the player has not yet put into the pot.\n
-        return - An answer to the open query. The answer action must be one of {@link BettingAnswer#ACTION_OPEN}, 
-        {@link BettingAnswer#ACTION_ALLIN} or {@link BettingAnswer#ACTION_CHECK }. 
-        If the action is open, the answers amount of chips in the anser must be between 
+        return - An answer to the open query. The answer action must be one of {@link BettingAnswer#ACTION_OPEN},
+        {@link BettingAnswer#ACTION_ALLIN} or {@link BettingAnswer#ACTION_CHECK }.
+        If the action is open, the answers amount of chips in the anser must be between
         <code>minimumPotAfterOpen</code> and the players total amount of chips (the amount of chips alrady put into
         pot plus the remaining amount of chips).
         '''
@@ -383,7 +384,7 @@ class pokerGames(object):
         Modify queryCardsToThrow() and add your strategy to throw cards\n
         Called during the draw phase of the game when the player is offered to throw away some
         (possibly all) of the cards on hand in exchange for new.\n
-        return - An array of the cards on hand that should be thrown away in exchange for new, or 
+        return - An array of the cards on hand that should be thrown away in exchange for new, or
         <code>null</code> or an empty array to keep all cards.\n
         @see     #infoCardsInHand(ca.ualberta.cs.poker.Hand)
         '''
@@ -425,7 +426,7 @@ class pokerGames(object):
         Called when a new round begins.\n
         round - the round number (increased for each new round).
         '''
-        #_nrTimeRaised = 0
+        # _nrTimeRaised = 0
         print('Starting Round: ' + _round)
 
     def infoGameOver(self):

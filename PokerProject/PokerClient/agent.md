@@ -7,6 +7,7 @@
 - Marks important cards when agent has pairs.
 - Agent can determine if it is close to a straight (can only be determined by first or last card).
 - Agent can determine if it is close to a flush (can only be determined by first or last card).
+- Agent can see Ace as part of a low straight hand.
 
 ## Grading criteria
 
@@ -33,7 +34,7 @@
   - [ ] Rank potential strength.
     - [ ] Determine which goal hand is the closes.
 - [ ] When to "check" during opening round (if first).
-- [ ] Handle cases when Aces are low (when part of straight or straight flush).
+- [x] Handle cases when Aces are low (when part of a "A-2-3-4-5" straight or straight flush).
 - [x] Mark important cards.
 - [ ] Determine if close to flush
 
