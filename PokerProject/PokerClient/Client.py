@@ -286,9 +286,12 @@ class pokerGames(object):
                     # If hand is too weak, fold.
                     elif self.handStrength <= 10:
                         return ClientBase.BettingAnswer.ACTION_CHECK
+                    # Else-statement for cases not covered by previous if-statements.
+                    else:
+                        return ClientBase.BettingAnswer.ACTION_CHECK
 
                 # return ClientBase.BettingAnswer.ACTION_OPEN,  iOpenBet
-                return ClientBase.BettingAnswer.ACTION_OPEN,  (random.randint(0, 10) + _minimumPotAfterOpen) if _playersCurrentBet + _playersRemainingChips + 10 > _minimumPotAfterOpen else _minimumPotAfterOpen
+                # return ClientBase.BettingAnswer.ACTION_OPEN,  (random.randint(0, 10) + _minimumPotAfterOpen) if _playersCurrentBet + _playersRemainingChips + 10 > _minimumPotAfterOpen else _minimumPotAfterOpen
             else:
                 return ClientBase.BettingAnswer.ACTION_CHECK
 
@@ -323,10 +326,8 @@ class pokerGames(object):
         self.calculateHand()
 
         def chooseRaiseOrFold(self):
-            print('Got in here asked to raise or fold3')
             # Check if agent can afford to join the next round.
             if _playersCurrentBet + _playersRemainingChips > _minimumAmountToRaiseTo:
-                print('Got in here asked to raise or fold2')
                 # Go all-in if agent has a straight flush
                 if self.handRank == 'Straight flush':
                     return ClientBase.BettingAnswer.ACTION_RAISE, ClientBase.BettingAnswer.ACTION_ALLIN
@@ -350,11 +351,9 @@ class pokerGames(object):
                     return ClientBase.BettingAnswer.ACTION_RAISE, int(_playersRemainingChips/7) + _minimumAmountToRaiseTo
 
                 elif self.handRank == 'One pair':
-                    print('Got in here asked to raise or fold4')
                     return ClientBase.BettingAnswer.ACTION_RAISE, _minimumAmountToRaiseTo
 
                 elif self.handRank == 'High cards':
-                    print('Got in here asked to raise or fold1')
                     # If close to straight.
                     if self.checkForNearbyStraight('forwards') or self.checkForNearbyStraight('backwards'):
                         return ClientBase.BettingAnswer.ACTION_RAISE, _minimumAmountToRaiseTo + 10
