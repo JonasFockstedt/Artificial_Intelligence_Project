@@ -155,7 +155,7 @@ class pokerGames(object):
 
     def checkImportantCards(self):
         '''
-        If an agent has any number of pairs, not function is used to determine which cards can not be thrown away.
+        If an agent has any number of pairs, this function is used to determine which cards can not be thrown away.
         '''
         # Reset important cards.
         self.importantCards = []
