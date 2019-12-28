@@ -31,12 +31,16 @@ class pokerGames(object):
         self.handStrength = 0
         self.handRank = ''
         self.importantCards = []
+        self.strongestCards = []
 
     def returnSuit(self, card):
         '''
         Specifically called when the hand needs to be sorted after suits.
         '''
         return card[1]
+
+    def returnRank(self, card):
+        return card[0]
 
     def sortHand(self):
         '''
@@ -46,24 +50,56 @@ class pokerGames(object):
         # Sorts cards in alphabetical suit order.
         self.CurrentHand.sort(key=self.returnSuit)
 
-    def calculateHand(self):
-        strength = 0
+    def calculateStrongestCards(self):
+        self.strongestCards = []
 
+        for card in self.CurrentHand:
+            # Check if list is empty.
+            if not self.strongestCards:
+                self.strongestCards.append(card)
+            # If card to be inserted has greater value than card at first index (currently greatest card in the list).
+            elif cardRanks[card[0]] > cardRanks[self.strongestCards[0][0]]:
+                self.strongestCards.insert(0, card)
+            else:
+                for element in self.strongestCards:
+                    # If card has lesser value than the last element, put last in list.
+                    if cardRanks[card[0]] < cardRanks[self.strongestCards[-1][0]]:
+                        self.strongestCards.insert(
+                            self.strongestCards.index(self.strongestCards[-1])+1, card)
+                        break
+                    # If card to be inserted has lesser value than the second last card in the list.
+                    elif cardRanks[card[0]] < cardRanks[self.strongestCards[-2][0]]:
+                        self.strongestCards.insert(-1, card)
+                        break
+                    # If card has lesser value than the currently inspected element, put card after element.
+                    elif cardRanks[card[0]] < cardRanks[element[0]]:
+                        # If a second element is present in the list.
+                        if self.strongestCards[1]:
+                            # If card to be inserted has greater value than last card and if it has lesser value than the card at index 1.
+                            if cardRanks[card[0]] > cardRanks[self.strongestCards[-1][0]] and cardRanks[card[0]] < cardRanks[self.strongestCards[1][0]]:
+                                self.strongestCards.insert(2, card)
+                                break
+                            else:
+                                self.strongestCards.insert(
+                                    self.strongestCards.index(element)+1, card)
+                                break
+                        else:
+                            self.strongestCards.insert(
+                                self.strongestCards.index(element)+1, card)
+                        break
+
+        print('Printing out strongest cards in descending order: ' +
+              str(self.strongestCards))
+
+    def calculateHand(self):
         self.checkPairs()
         self.checkStraight()
-        # print('Rank order of first two cards:')
-        # print(self.CurrentHand[0][0], self.CurrentHand[1][0])
+
         if self.handRank == '':
             self.handRank = 'High cards'
 
         print('Hand rank of agent:')
         print(self.handRank)
-
-        for card in self.CurrentHand:
-            strength += cardRanks[card[0]]
-        self.handStrength = strength
-
-        print('Strength of hand is: ' + str(self.handStrength))
 
     def checkStraight(self):
         '''
@@ -121,7 +157,6 @@ class pokerGames(object):
             if occurence[1] > numberOfPairs:
                 numberOfPairs = occurence[1]
 
-        # Revisit this at some point.
             for rank in listOfDict:
                 # Index 1 corresponds to the number of occurences of a given card.
                 # If a rank has occured two times.
@@ -166,6 +201,13 @@ class pokerGames(object):
                 if card[0] == secondCard[0]:
                     self.importantCards.append(card)
                     self.importantCards.append(secondCard)
+
+        # If agent did not consider any cards to be of importance, and hand rank is "high cards", consider cards with value of 12 or higher as important.
+        if not self.importantCards and self.handRank == 'High cards':
+            self.calculateStrongestCards
+            for card in self.importantCards:
+                if cardRanks[card[0]] >= 12:
+                    self.importantCards.append(card)
 
         print('IMPORTANT CARDS: ', self.importantCards)
 
@@ -241,7 +283,7 @@ class pokerGames(object):
         playersRemainingChips - the number of chips the player has not yet put into the pot.\n
         return - An answer to the open query. The answer action must be one of {@link BettingAnswer#ACTION_OPEN},
         {@link BettingAnswer#ACTION_ALLIN} or {@link BettingAnswer#ACTION_CHECK }.
-        If the action is open, the answers amount of chips in the anser must be between
+        If the action is open, the answers amount of chips in the answer must be between
         <code>minimumPotAfterOpen</code> and the players total amount of chips (the amount of chips alrady put into
         pot plus the remaining amount of chips).
         '''
@@ -251,7 +293,8 @@ class pokerGames(object):
         self.calculateHand()
 
         def chooseOpenOrCheck(self):
-            if _playersCurrentBet + _playersRemainingChips >= _minimumPotAfterOpen:
+            # Check if agent can open or go all-in.
+            if _playersCurrentBet + _playersRemainingChips > _minimumPotAfterOpen:
 
                 # Go all-in if agent has a straight flush
                 if self.handRank == 'Straight flush':
@@ -279,22 +322,34 @@ class pokerGames(object):
                     return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen
 
                 elif self.handRank == 'High cards':
+                    self.calculateStrongestCards()
                     # If close to straight.
                     if self.checkForNearbyStraight('forwards') or self.checkForNearbyStraight('backwards'):
                         return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen + 10
+                    # If close to flush.
                     elif self.checkForNearbyFlush('forwards') or self.checkForNearbyFlush('backwards'):
                         return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen + _playersRemainingChips/3
-                    # If hand is too weak, fold.
-                    elif self.handStrength <= 10:
-                        return ClientBase.BettingAnswer.ACTION_CHECK
+                    # If the most valuable card has a value of at least 10.
+                    elif cardRanks[self.strongestCards[0][0]] >= 10:
+                        return ClientBase.BettingAnswer.ACTION_OPEN, _minimumPotAfterOpen + 1
                     # Else-statement for cases not covered by previous if-statements.
                     else:
                         return ClientBase.BettingAnswer.ACTION_CHECK
 
                 # return ClientBase.BettingAnswer.ACTION_OPEN,  iOpenBet
                 # return ClientBase.BettingAnswer.ACTION_OPEN,  (random.randint(0, 10) + _minimumPotAfterOpen) if _playersCurrentBet + _playersRemainingChips + 10 > _minimumPotAfterOpen else _minimumPotAfterOpen
+            # If hand is equal or better than "one pair".
+            elif handRanks[self.handRank] >= 1:
+                return ClientBase.BettingAnswer.ACTION_CALL
+            # If hand is 'High cards'.
             else:
-                return ClientBase.BettingAnswer.ACTION_CHECK
+                self.calculateStrongestCards()
+                # If close to straight.
+                if self.checkForNearbyStraight('forwards') or self.checkForNearbyStraight('backwards'):
+                    return ClientBase.BettingAnswer.ACTION_CALL
+                # If close to flush.
+                elif self.checkForNearbyFlush('forwards') or self.checkForNearbyFlush('backwards'):
+                    return ClientBase.BettingAnswer.ACTION_CALL
 
         return chooseOpenOrCheck(self)
         # return {
@@ -327,8 +382,8 @@ class pokerGames(object):
         self.calculateHand()
 
         def chooseRaiseOrFold(self):
-            # Check if agent can afford to join the next round.
-            if _playersCurrentBet + _playersRemainingChips >= _minimumAmountToRaiseTo:
+            # Check if agent can raise.
+            if _playersCurrentBet + _playersRemainingChips > _minimumAmountToRaiseTo:
                 # Go all-in if agent has a straight flush
                 if self.handRank == 'Straight flush':
                     return ClientBase.BettingAnswer.ACTION_RAISE, ClientBase.BettingAnswer.ACTION_ALLIN
@@ -355,19 +410,26 @@ class pokerGames(object):
                     return ClientBase.BettingAnswer.ACTION_RAISE, _minimumAmountToRaiseTo
 
                 elif self.handRank == 'High cards':
+                    self.calculateStrongestCards()
                     # If close to straight.
                     if self.checkForNearbyStraight('forwards') or self.checkForNearbyStraight('backwards'):
                         return ClientBase.BettingAnswer.ACTION_RAISE, _minimumAmountToRaiseTo + 10
                     elif self.checkForNearbyFlush('forwards') or self.checkForNearbyFlush('backwards'):
                         return ClientBase.BettingAnswer.ACTION_RAISE, _minimumAmountToRaiseTo + _playersRemainingChips/2
+                    # If the most valuable card has a value of at least 10.
+                    elif cardRanks[self.strongestCards[0][0]] >= 10:
+                        return ClientBase.BettingAnswer.ACTION_RAISE, _minimumAmountToRaiseTo + 1
                     # If hand is too weak, fold.
                     elif self.handStrength <= 10:
                         return ClientBase.BettingAnswer.ACTION_FOLD
-                    # Else-statement to handle cases not covered.
+                    # Else-statement to handle cases not covered by previous if-statements.
                     else:
                         return ClientBase.BettingAnswer.ACTION_FOLD
                 # return ClientBase.BettingAnswer.ACTION_RAISE,  (random.randint(0, 10) + _minimumAmountToRaiseTo) if _playersCurrentBet + _playersRemainingChips + 10 > _minimumAmountToRaiseTo else _minimumAmountToRaiseTo
-            elif self.CurrentHand == 'Straight flush' or 'Four of a kind' and _playersCurrentBet + _playersRemainingChips > _minimumAmountToRaiseTo:
+            # If agent has four of a kind or straight flush.
+            elif handRanks[self.handRank] >= 7:
+                return ClientBase.BettingAnswer.ACTION_CALL
+            elif self.handRank is not 'High cards':
                 return ClientBase.BettingAnswer.ACTION_CALL
             else:
                 return ClientBase.BettingAnswer.ACTION_FOLD

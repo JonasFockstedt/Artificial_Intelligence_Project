@@ -7,7 +7,8 @@
 - Marks important cards when agent has pairs.
 - Agent can determine if it is close to a straight (can only be determined by first or last card).
 - Agent can determine if it is close to a flush (can only be determined by first or last card).
-- Agent can see Ace as part of a low straight hand.
+- Agent can see Ace as part of a low straight hand (A-2-3-4-5).
+- If agent has "high cards" hand, it now sorts them in descending order in another list. This list can be used to determine how good "high cards" hand it has.
 
 ## Grading criteria
 
